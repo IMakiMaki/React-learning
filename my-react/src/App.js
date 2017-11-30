@@ -27,10 +27,37 @@ function tick() {
   )
 }
 
+function toCelsius(temperature) {
+  if(Number.isNaN(temperature)) {
+    return '';
+  } else {
+    let output = Math.round((parseInt(temperature) - 32) / 1.8 * 1000) / 1000;
+    return output;
+  }
+}
+
+function toFahrenheit(temperature) {
+  console.log(temperature)
+  if(Number.isNaN(temperature)) {
+    return '';
+  } else {
+    let output = Math.round((parseInt(temperature) * 1.8 + 32) * 1000) / 1000 ;
+    return output;
+  }
+}
+
+function convert(temperature, trans) {
+  return trans(parseFloat(temperature));
+}
+
 class Clock extends Component {
   constructor(props) {
     super(props)
-    this.state = { date: new Date() };
+    this.state = {
+      date: new Date(),
+      fahrenheit: 0,
+      celsius: 0
+    };
   }
 
   componentDidMount() {
@@ -48,13 +75,31 @@ class Clock extends Component {
     this.setState({date: new Date()})
   }
 
+  transFormFahrenheit = (temperature) => {
+    this.setState({
+      fahrenheit: temperature,
+      celsius: convert(temperature, toCelsius)
+    })
+  }
+
+  transFormCelsius = (temperature) => {
+    this.setState({
+      celsius: temperature,
+      fahrenheit: convert(temperature, toFahrenheit)
+    })
+  }
+
   render() {
     return (
       <div>
         <h1>Hello, world!</h1>
         <Toggle />
         <h2>It is { this.state.date.toLocaleTimeString() }</h2>
-        <ReactForm />
+        {/* <ReactForm /> */}
+        { this.state.celsius }__
+        { this.state.fahrenheit }
+        <TemperatureInput temperature={ this.state.fahrenheit } onTemperatureChange={ this.transFormFahrenheit } scale="f"/>
+        <TemperatureInput temperature={ this.state.celsius } onTemperatureChange={ this.transFormCelsius } scale="c"/>
       </div>
     );
   }
@@ -157,6 +202,29 @@ class ReactForm extends Component {
   }
 }
 
-setInterval(tick, 1000)
+class TemperatureInput extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      scale: {
+        c: 'Celsius',
+        f: 'Fahrenheit'
+      }
+    }
+  }
+
+  handleValueChange = (event) => {
+    this.props.onTemperatureChange(event.target.value);
+  }
+
+  render() {
+    return (
+      <div>
+        <p>This is a { this.state.scale[this.props.scale] } input!</p>
+        <input onChange={ this.handleValueChange } value={ this.props.temperature } type="text"/>
+      </div>
+    )
+  }
+}
 
 export default Clock;
