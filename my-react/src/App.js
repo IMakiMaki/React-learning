@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import logo from './logo.svg';
 import './App.css';
 
+import Calculator from './temperature'
+
 // class App extends Component {
 //    render() {
 //     return (
@@ -93,6 +95,7 @@ class Clock extends Component {
     return (
       <div>
         <h1>Hello, world!</h1>
+        <Calculator></Calculator>
         <Toggle />
         <h2>It is { this.state.date.toLocaleTimeString() }</h2>
         {/* <ReactForm /> */}
