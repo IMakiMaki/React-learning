@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 
 const PRODUCTS = [
@@ -13,7 +13,7 @@ const PRODUCTS = [
 class Product extends Component {
   render() {
     return (
-        <FilterableProductTable/>
+      <FilterableProductTable/>
     )
   }
 }
@@ -35,17 +35,44 @@ class ProductTable extends Component {
     const productData = this.props.productList;
     const filterText = this.props.filterText;
     const showStock = this.props.showStock;
+    let lastCategory = '';
     return (
-        <div>
-          {
-            this.props.productList.map(item => {
-              return <p>{item.price}</p>
-            })
-          }
-        </div>
+      <div>
+        {
+          this.props.productList.map((product) =>
+            {
+              let flag = false;
+              if(product.category === lastCategory) {
+                flag = false;
+              } else {
+                flag = true;
+                lastCategory = product.category;
+              }
+              return flag ? <div><ProductCateGoryRow cateGory={ product.category }/> <ProductRow product={ product } /></div> : <ProductRow product={ product } />
+            }
+          )
+        }
+      </div>
     )
   }
 }
+
+class ProductCateGoryRow extends Component {
+  render() {
+    return(
+      <p>{ this.props.cateGory }</p>
+    )
+  }
+}
+
+class ProductRow extends Component {
+  render() {
+    return(
+      <p>{ this.props.product.name }</p>
+    )
+  }
+}
+
 
 class FilterableProductTable extends Component {
   constructor() {
@@ -70,17 +97,17 @@ class FilterableProductTable extends Component {
 
   render() {
     return (
-        <div>
-          <SearchBar
-              onTextChange={ this.handleSearchTextChange }
-              onShowChange={ this.handleShowStockChange }
-              searchText={ this.state.searchText }
-              showStock={ this.state.showStock } />
-          <ProductTable
-              filterText={ this.state.searchText }
-              showStock={ this.state.showStock }
-              productList={ PRODUCTS } />
-        </div>
+      <div>
+        <SearchBar
+          onTextChange={this.handleSearchTextChange}
+          onShowChange={this.handleShowStockChange}
+          searchText={this.state.searchText}
+          showStock={this.state.showStock}/>
+        <ProductTable
+          filterText={this.state.searchText}
+          showStock={this.state.showStock}
+          productList={PRODUCTS}/>
+      </div>
     )
   }
 }
@@ -100,14 +127,16 @@ class SearchBar extends Component {
 
   render() {
     return (
-        <form>
-          <p>
-            <input value={ this.props.searchText } onChange={ this.handleSearchTextChange } placeholder="Please enter the keywords" type="text"/>
-          </p>
-          <p>
-            <input checked={ this.props.showStock } onChange={ this.handleCheckedChange } type="checkbox"/>Only show products in stock
-          </p>
-        </form>
+      <form>
+        <p>
+          <input value={this.props.searchText} onChange={this.handleSearchTextChange}
+                 placeholder="Please enter the keywords" type="text"/>
+        </p>
+        <p>
+          <input checked={this.props.showStock} onChange={this.handleCheckedChange} type="checkbox"/>Only show products
+          in stock
+        </p>
+      </form>
     )
   }
 }
